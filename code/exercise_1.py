@@ -130,3 +130,6 @@ if __name__ == '__main__':
 
     # Scatter plot
     DataClass.scatter()
+
+    # Store data
+    DataClass.store_data('data/Assignment_1_data.npz')

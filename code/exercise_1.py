@@ -16,6 +16,17 @@ class Data:
             n_points:int, 
             intercept:float, slope:float, noise:float
         ):
+        '''
+        Constructor
+
+        Parameters:
+        x_lb (float): Lower bound of the x values
+        x_ub (float): Upper bound of the x values
+        n_points (int): Number of points
+        intercept (float): Intercept of the linear function
+        slope (float): Slope of the linear function
+        noise (float): Noise of the data
+        '''
         self.x_lb = x_lb
         self.x_ub = x_ub
         self.n_points = n_points 
@@ -27,12 +38,30 @@ class Data:
         self.x, self.y = [], []
 
     def linear_function(self, x:np.array) -> np.array:
+        '''
+        Get linear y values based on the slope and intercept
+
+        Parameters:
+        x np.array: x values
+
+        Returns:
+        (np.array): Linear y values
+        '''
         return self.intercept + self.slope * x
 
     def generate_data(
             self, 
             dist:str='linear'
         ) -> np.array:
+        '''
+        Generate data based on the distribution
+
+        Appends x and y data to storage
+
+        Parameters:
+        dist (str): Distribution of the data
+        Choose from 'linear', 'linear_noise'
+        '''
         # Generate x data and linear y data
         x = np.random.rand(self.n_points) * (self.x_ub - self.x_lb) + self.x_lb
         y = self.linear_function(x)
@@ -48,6 +77,13 @@ class Data:
             self, 
             index_1:int, index_2:int
         ):
+        '''
+        Appends data from two datasets (given by index) and stores them
+
+        Parameters:
+        index_1 (int): Index of the first dataset
+        index_2 (int): Index of the second dataset
+        '''
 
         # Extract data
         x_1 = self.x[index_1]
@@ -67,6 +103,14 @@ class Data:
             self, 
             index:None|int=None,
         ):
+        '''
+        Scatter plot of the data
+        
+        Parameters:
+        index (None|int): Index of the dataset to plot
+        None: Plot all datasets
+        int: Plot the dataset with the given index
+        '''
 
         plt.figure()
         plt.title('Some random 2D data scatter plot')
@@ -87,7 +131,12 @@ class Data:
             self, 
             filename:str
         ):
+        '''
+        Store the metadata in a csv file
 
+        Parameters:
+        filename (str): Filename of the csv file
+        '''
         data = {
             'x_lb': [self.x_lb],
             'x_ub': [self.x_ub],
@@ -100,7 +149,7 @@ class Data:
         df.to_csv(filename, index=False)
 
     
-# Store repository data
+# Task 8
 REPOSITORY_1 = (
     '1. Repository: https://github.com/lululxvi/deepxde \n'
     + 'Copyright free license \n'
@@ -170,10 +219,10 @@ if __name__ == '__main__':
     # Append data
     DataClass.append_data(0, 1)
 
-    # Scatter plot
-    DataClass.scatter(0)
-    DataClass.scatter(1)
-    DataClass.scatter(2)
+    # # Scatter plot
+    # DataClass.scatter(0)
+    # DataClass.scatter(1)
+    # DataClass.scatter(2)
 
     # Scatter plot
     DataClass.scatter()

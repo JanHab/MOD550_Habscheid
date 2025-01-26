@@ -5,6 +5,7 @@ Mail: Jan.habscheid@rwth-aachen.de
 
 # imports
 import numpy as np 
+import pandas as pd
 import matplotlib.pyplot as plt
 
 # Generate class for datastructure
@@ -86,16 +87,62 @@ class Data:
             self, 
             filename:str
         ):
-        np.savez(
-            filename, 
-            x_lb=self.x_lb, x_ub=self.x_ub, 
-            n_points=self.n_points,
-            intercept=self.intercept, slope=self.slope, 
-            noise=self.noise,
-            x=self.x, y=self.y
-        )
+
+        data = {
+            'x_lb': [self.x_lb],
+            'x_ub': [self.x_ub],
+            'n_points': [self.n_points],
+            'intercept': [self.intercept],
+            'slope': [self.slope],
+            'noise': [self.noise]
+        }
+        df = pd.DataFrame(data)
+        df.to_csv(filename, index=False)
 
     
+# Store repository data
+REPOSITORY_1 = (
+    '1. Repository: https://github.com/lululxvi/deepxde \n'
+    + 'Copyright free license \n'
+    + 'Folder called: deepxde \n'
+    + 'Different submodules in the folder and some direct files \n'
+    + 'Docstrings at some functions, when unclear what this is for \n'
+    + 'However, no general documentation \n'
+    + 'No checking for bad inputs \n'
+    + 'No testing \n'
+    + 'Several examples, also listed in the automatically generated documentation documentation'
+    + '\n\n\n'
+)
+
+REPOSITORY_2 = (
+    '2. Repository: https://github.com/tataratat/splinepy \n'
+    + 'Copright free license (MIT) \n'
+    + 'Folder called: splinepy \n'
+    + 'Different submodules and some direct files \n'
+    + 'Strict docstrings in numpy docstring style \n'
+    + 'Strict checking for bad inputs \n'
+    + 'Clear naming convention (call variables what they are) \n'
+    + 'Github pipeline for testing \n'
+    + 'Online documentation \n'
+    + 'Plenty examples to get familiar with the software'
+    + '\n\n\n'
+)
+
+REPOSITORY_3 = (
+    '3. Repository: https://github.com/numpy/numpy \n'
+    + 'Copyright free license (numpy license) under some conditions \n'
+    + 'Folder called: numpy \n'
+    + 'Different submodules and some direct files \n'
+    + 'No strict docstrings, if docstrings then in numpy docstring style \n'
+    + 'However, it wrappes a C library, so the code is not that easy to understand \n'
+    + 'Strict checking for bad inputs with plenty of error messages \n'
+    + 'clear naming convention \n'
+    + 'Pull request template \n'
+    + 'Github pipeline for testing \n'
+    + 'Online documentation \n'
+    + 'Plenty examples to get familiar with the software \n'
+)
+
 
 if __name__ == '__main__':
     # Parameters
@@ -132,4 +179,10 @@ if __name__ == '__main__':
     DataClass.scatter()
 
     # Store data
-    DataClass.store_data('data/Assignment_1_data.npz')
+    DataClass.store_data('data/Assignment_1_Data.csv')
+
+    # Write repository data to txt file
+    with open('data/Assignment_1_Repositories.txt', 'w') as file:
+        file.write(REPOSITORY_1)
+        file.write(REPOSITORY_2)
+        file.write(REPOSITORY_3)

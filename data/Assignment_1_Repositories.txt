@@ -1,0 +1,35 @@
+1. Repository: https://github.com/lululxvi/deepxde 
+Copyright free license 
+Folder called: deepxde 
+Different submodules in the folder and some direct files 
+Docstrings at some functions, when unclear what this is for 
+However, no general documentation 
+No checking for bad inputs 
+No testing 
+Several examples, also listed in the automatically generated documentation documentation
+
+
+2. Repository: https://github.com/tataratat/splinepy 
+Copright free license (MIT) 
+Folder called: splinepy 
+Different submodules and some direct files 
+Strict docstrings in numpy docstring style 
+Strict checking for bad inputs 
+Clear naming convention (call variables what they are) 
+Github pipeline for testing 
+Online documentation 
+Plenty examples to get familiar with the software
+
+
+3. Repository: https://github.com/numpy/numpy 
+Copyright free license (numpy license) under some conditions 
+Folder called: numpy 
+Different submodules and some direct files 
+No strict docstrings, if docstrings then in numpy docstring style 
+However, it wrappes a C library, so the code is not that easy to understand 
+Strict checking for bad inputs with plenty of error messages 
+clear naming convention 
+Pull request template 
+Github pipeline for testing 
+Online documentation 
+Plenty examples to get familiar with the software 

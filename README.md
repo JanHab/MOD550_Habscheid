@@ -12,6 +12,12 @@ pip install -r requirements.txt
 
 ## Assignment 1
 
+Execute with:
+
+``` bash
+python code/exercise_1.py
+```
+
 ### How to use my data?
 
 In `data/Assignment_1_Data_MetaData.csv` you find the "meta" data to reproduce my data. So with this is meant, the boundaries for the x-domain, number of points, etc. 

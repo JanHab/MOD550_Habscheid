@@ -23,3 +23,14 @@ df = pd.read_csv(csv_file)
 # scatter plot
 plt.scatter(df['x'], df['y'])
 ```
+
+## Contact
+
+### Author
+
+- Jan Habscheid
+- [Jan.Habscheid@rwth-aachen.de](mailto:Jan.Habscheid@rwth-aachen.de)
+
+### Supervisor
+
+- Enrico Riccardi

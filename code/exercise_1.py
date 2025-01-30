@@ -7,6 +7,8 @@ Mail: Jan.habscheid@rwth-aachen.de
 import numpy as np 
 import pandas as pd
 import matplotlib.pyplot as plt
+from datetime import datetime
+from meteostat import Point, Daily
 
 # Generate class for datastructure
 class Data:
@@ -250,6 +252,27 @@ if __name__ == '__main__':
     DataClass.store_metadata('data/Assignment_1_Data_MetaData.csv')
     DataClass.store_data('data/Assignment_1_Data.csv', -1)
 
+    # I imported historical weather data from Oslo as an external 2D dataset
+    # Define the time period
+    start = datetime(2023, 1, 30)
+    end = datetime(2025, 1, 30)
+
+    # Create a Point for Oslo, Norway (latitude, longitude, elevation)
+    oslo = Point(59.9139, 10.7522, 23)
+
+    # Retrieve daily data for Oslo
+    data = Daily(oslo, start, end)
+    data = data.fetch()
+
+    # Plot the average temperature
+    plt.figure()
+    plt.title('Average temperatue in Oslo (2023-2025)')
+    plt.plot(data['tavg'])
+    plt.xticks(rotation=90)
+    plt.xlabel('Date')
+    plt.ylabel('Temperature (°C)')
+    plt.grid()
+    plt.show()
 
     # Write repository data to txt file
     with open('data/Assignment_1_Repositories.txt', 'w') as file:

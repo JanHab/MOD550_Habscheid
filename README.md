@@ -24,6 +24,14 @@ df = pd.read_csv(csv_file)
 plt.scatter(df['x'], df['y'])
 ```
 
+### Which data did I import?
+
+Historical temperature in Oslo (last 2 years) with the additional package `meteostat`. Install it with:
+
+``` bash
+pip install meteostat
+```
+
 ## Contact
 
 ### Author

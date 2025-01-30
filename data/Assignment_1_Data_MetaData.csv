@@ -1,0 +1,2 @@
+x_lb,x_ub,n_points,intercept,slope,noise
+0,1,101,2,5,0.1

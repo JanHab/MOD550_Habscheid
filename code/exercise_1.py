@@ -127,7 +127,7 @@ class Data:
         plt.savefig('data/Assignment_1_Scatter_plot.pdf')
         plt.show()
 
-    def store_data(
+    def store_metadata(
             self, 
             filename:str
         ):
@@ -144,6 +144,25 @@ class Data:
             'intercept': [self.intercept],
             'slope': [self.slope],
             'noise': [self.noise]
+        }
+        df = pd.DataFrame(data)
+        df.to_csv(filename, index=False)
+
+    def store_data(
+            self, 
+            filename:str,
+            index:int
+        ):
+        '''
+        Store the metadata in a csv file
+
+        Parameters:
+        filename (str): Filename of the csv file
+        index (int): Index of the dataset to store
+        '''
+        data = {
+            'x': self.x[index],
+            'y': self.y[index]
         }
         df = pd.DataFrame(data)
         df.to_csv(filename, index=False)
@@ -228,7 +247,9 @@ if __name__ == '__main__':
     DataClass.scatter()
 
     # Store data
-    DataClass.store_data('data/Assignment_1_Data.csv')
+    DataClass.store_metadata('data/Assignment_1_Data_MetaData.csv')
+    DataClass.store_data('data/Assignment_1_Data.csv', -1)
+
 
     # Write repository data to txt file
     with open('data/Assignment_1_Repositories.txt', 'w') as file:

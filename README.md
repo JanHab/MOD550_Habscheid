@@ -1,6 +1,15 @@
 # MOD550_Habscheid
 Repository for the course: MOD550 from Jan Habscheid
 
+## Installation
+
+All the calculations were performed with Python=3.12.2.
+Use the `requirements.txt` to install necessary dependencies
+
+``` bash
+pip install -r requirements.txt
+```
+
 ## Assignment 1
 
 ### How to use my data?

@@ -7,6 +7,7 @@ Mail: Jan.habscheid@rwth-aachen.de
 import numpy as np 
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
 from datetime import datetime
 from meteostat import Point, Daily
 
@@ -101,9 +102,31 @@ class Data:
         self.x.append(x)
         self.y.append(y)
 
+    def linear_regression(self, index:int) -> np.array:
+        '''
+        Linear regression of the data
+
+        Parameters:
+        index (int): Index of the dataset to plot
+
+        Returns:
+        (np.array): Linear regression values
+        '''
+        # Extract data
+        x = self.x[index]
+        y = self.y[index]
+
+        # Linear regression
+        model = LinearRegression()
+        model.fit(x.reshape(-1, 1), y)
+        y_pred = model.predict(x.reshape(-1, 1))
+
+        return y_pred
+
     def scatter(
             self, 
             index:None|int=None,
+            regression:None|int=None
         ):
         '''
         Scatter plot of the data
@@ -112,6 +135,7 @@ class Data:
         index (None|int): Index of the dataset to plot
         None: Plot all datasets
         int: Plot the dataset with the given index
+        regression (None|int): Plot the linear regression line (int gives the index for the regression)
         '''
 
         plt.figure()
@@ -121,6 +145,9 @@ class Data:
                 plt.scatter(x_, y_, label=f'Datset {i}')
         else:
             plt.scatter(self.x[index], self.y[index], label=f'Datset {index}')
+        if regression is not None:
+            y_pred = self.linear_regression(regression)
+            plt.plot(self.x[regression], y_pred, color='red', label='Linear regression')
         plt.xlabel('x')
         plt.ylabel('y')
         plt.legend(loc='best')
@@ -246,7 +273,9 @@ if __name__ == '__main__':
     # DataClass.scatter(2)
 
     # Scatter plot
-    DataClass.scatter()
+    DataClass.scatter(
+        regression=2
+    )
 
     # Store data
     DataClass.store_metadata('data/Assignment_1_Data_MetaData.csv')

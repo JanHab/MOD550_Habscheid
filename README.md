@@ -47,6 +47,8 @@ Historical temperature in Oslo (last 2 years) with the additional package `meteo
 pip install meteostat
 ```
 
+The truth about this data is the average temperature on each day for the last 2 years at the specified spatial position on earth.
+
 ## Contact
 
 ### Author

@@ -1,9 +1,9 @@
 import numpy as np 
 import matplotlib.pyplot as plt 
 
-from sklearn.datasets import make_blobs
 from sklearn.cluster import KMeans
 from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import cross_validate
 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
@@ -56,17 +56,9 @@ print('Test successful')
 ################### Task 2 ##############################
 #########################################################
 def oscillator(
-        # x:np.array, 
-        # amplitude:float, frequency:float, 
-        # offset_x:float, offset_y:float, 
-        t, d, w0, 
+        t:np.array, d:float, w0:float, 
         noise:float=0
     ) -> np.array:
-    # oscilations =  amplitude * np.sin(frequency * x + offset_x) + offset_y
-    # oscilations += np.random.normal(0, noise, len(x))
-
-    assert d < w0, "The system must be underdamped (d < w0) for oscillations to occur."
-
     # Compute the damped frequency of the oscillator
     w = np.sqrt(w0**2 - d**2)
     
@@ -89,30 +81,27 @@ def oscillator(
 
     return oscillations
 
-# amplitude = 2.5
-# frequency = 1.9
-# offset_x = 0
-# offset_y = 4
+# Set parameter
 noise = [0, .5, 1e-1]
-
 n_points = 200
 a, b = 0, 2
-x = np.linspace(a, b, n_points)
+time = np.linspace(a, b, n_points)
 range_ = b - a
 d, w0 = 2, 20
 oscillations = [oscillator(
-    x, 
+    time, 
     d, w0,
     noise=noise_
 ) for noise_ in noise]
 
-# plt.figure()
-# [plt.plot(x, oscillation, label=f'Noise: {noise_}') for noise_, oscillation in zip(noise, oscillations)]
-# plt.grid()
-# plt.legend()
-# plt.xlabel('x')
-# plt.ylabel('Amplitude')
-# plt.show()
+plt.figure()
+plt.title('Oscillations')
+[plt.plot(time, oscillation, label=f'Noise: {noise_}') for noise_, oscillation in zip(noise, oscillations)]
+plt.grid()
+plt.legend()
+plt.xlabel('Time')
+plt.ylabel('Amplitude')
+plt.show()
 
 print(f'Data generated: {n_points}, {range_}, noise level: {noise}')
 
@@ -122,17 +111,8 @@ print(f'Data generated: {n_points}, {range_}, noise level: {noise}')
 ################### Task 3 ##############################
 #########################################################
 
-# batch_size = 45
-# centers = [[1, 1], [-1, -1], [1, -1]]
-# n_clusters = len(centers)
-# X, labels_true = make_blobs(n_samples=n_points, centers=centers, cluster_std=0.5)
+X = np.array([time, oscillations[0]]).T
 
-X = np.array([x, oscillations[0]]).T
-
-# Plot the cluster
-# fig, axs = plt.subplots()
-# axs.scatter(X[:, 0], X[:, 1], s=10)
-# fig.show()
 
 # Use k-means to cluster the data
 n_clusters = np.linspace(2, n_points, n_points-1, dtype=int)
@@ -174,6 +154,22 @@ linear_regressor.fit(x_regressor, y_regressor)
 
 y_regression = linear_regressor.predict(x_regressor)
 
+number_cv = 10
+cv_results = cross_validate(
+    linear_regressor,
+    x_regressor,
+    y_regressor,
+    cv=number_cv,
+    scoring='neg_mean_squared_error'
+)
+fig, axs = plt.subplots()
+fig.suptitle('Linear Regression - Cross validation scores')
+axs.semilogy(np.linspace(1, number_cv, number_cv), -cv_results['test_score'])
+axs.grid()
+axs.set_xlabel('Cross Validation')
+axs.set_ylabel('MSE')
+fig.show()
+
 print('Task completed Linear Regression')
 
 # Number b) NN (Keras)
@@ -191,28 +187,49 @@ NeuralNet.compile(
     loss='mean_squared_error'
 )
 
-y_nn = []
-number_trainers = 5
+y_nn, history = [], []
+loss_mse = []
+number_trainers = 20
 for i in range(number_trainers):
-    NeuralNet.fit(
+    history.append(NeuralNet.fit(
         x_regressor, 
         y_regressor, 
         epochs=50, 
         batch_size=32,
-    )
+    ))
 
     y_nn.append(
         NeuralNet.predict(x_regressor)
     )
+    loss_mse.append(history[-1].history['loss'][-1])
 
 fig, axs = plt.subplots()
-plt.title('Neural Network over Epochs')
-plt.plot(x_regressor, y_regressor, label='True')
-[plt.plot(x_regressor, y_nn_, label=f'Epochs = {50*(i+1)}') for y_nn_, i in zip(y_nn, range(number_trainers))]
-plt.legend()
-plt.grid()
-plt.xlabel('x')
-plt.ylabel('Amplitude')
+fig.suptitle('Neural Network over Epochs')
+axs.plot(x_regressor, y_regressor, label='True')
+[axs.plot(x_regressor, y_nn_, label=f'Epochs = {50*((i*4)+1)}') for y_nn_, i in zip(y_nn[::4], range(int(number_trainers/4)))]
+axs.legend()
+axs.grid()
+axs.set_xlabel('Time')
+axs.set_ylabel('Amplitude')
+fig.show()
+
+error_NeuralNet = [sk_mse(y_regressor, y_nn_) for y_nn_ in y_nn]
+fig, axs = plt.subplots()
+fig.suptitle('Error over Epochs - Neural Net')
+axs.semilogy(np.linspace(50, number_trainers*50, number_trainers), error_NeuralNet)
+axs.legend()
+axs.grid()
+axs.set_xlabel('Epochs')
+axs.set_ylabel('Error (mse)')
+fig.show()
+
+# Assume to not know the truth anymore
+fig, axs = plt.subplots()
+fig.suptitle('Neural Network loss function over Epochs \n We dont know the truth anymore')
+axs.semilogy(np.linspace(50, number_trainers*50, number_trainers), loss_mse)
+axs.grid()
+axs.set_xlabel('Epochs')
+axs.set_ylabel('MSE')
 fig.show()
 
 print('Task completed Neural Network')
@@ -368,6 +385,7 @@ optimiser = torch.optim.Adam(pinn.parameters(), lr=1e-3)  # Learning rate: 0.001
 # Training loop
 pinn_solution = []
 t_PINN = []
+loss_PINN = []
 for i in range(12001):  # Train for 12,000 iterations
     optimiser.zero_grad()  # Reset gradients before each optimization step
     
@@ -406,46 +424,49 @@ for i in range(12001):  # Train for 12,000 iterations
         u = pinn(t_test).detach()  # Compute predicted solution on test points
         uext = pinn(t_extra).detach()  # Compute predicted solution on extrapolation points
 
-        # plt.figure(figsize=(6, 2.5))
-
-        # # Plot training points: Physics points (green) and boundary points (red)
-        # plt.scatter(t_physics.detach()[:, 0], torch.zeros_like(t_physics)[:, 0], 
-        #             s=10, lw=0, color="tab:green", alpha=0.6, label="Physics Points")
-        # plt.scatter(t_boundary.detach()[:, 0], torch.zeros_like(t_boundary)[:, 0], 
-        #             s=10, lw=0, color="tab:red", alpha=0.6, label="Boundary Points")
-
-        # # Plot exact solution (ground truth)
-        # plt.plot(t_extra[:, 0], u_extra[:, 0], label="Exact solution", 
-        #          color="tab:grey", alpha=0.6)
-
-        # # Plot PINN solutions (trained and extrapolated)
-        # plt.plot(t_extra[:, 0], uext[:, 0], '--', label="PINN Extrapolation", 
-        #          color="tab:blue", alpha=0.5)
-        # plt.plot(t_test[:, 0], u[:, 0], label="PINN solution", color="tab:blue")
-        # pinn_solution.append(u)
-        # t_PINN.append(t_test)
-
-        # plt.title(f"Training step {i}")
-        # plt.legend()
-        # plt.show()
+        pinn_solution.append(u)
+        t_PINN.append(t_test)
+        loss_PINN.append(loss.item())
 
 fig, axs = plt.subplots()
-plt.title('Neural Network over Epochs')
-plt.plot(x_regressor, y_regressor, label='True')
-[plt.plot(t_PINN_, pinn_solution_, label=f'Epochs = {i*4000}') for i, (t_PINN_, pinn_solution_) in enumerate(zip(t_PINN, pinn_solution))]
-plt.legend()
-plt.grid()
-plt.xlabel('x')
-plt.ylabel('Amplitude')
+fig.suptitle('PINNs over Epochs')
+axs.plot(x_regressor, y_regressor, label='True')
+[axs.plot(t_PINN_, pinn_solution_, label=f'Epochs = {i*4000}') for i, (t_PINN_, pinn_solution_) in enumerate(zip(t_PINN, pinn_solution))]
+axs.legend()
+axs.grid()
+axs.set_xlabel('Time')
+axs.set_ylabel('Amplitude')
+fig.show()
+
+y_PINN_true = exact_solution(d, w0, t_test)
+error_PINN = [sk_mse(y_PINN_true, y_nn_) for y_nn_ in pinn_solution]
+fig, axs = plt.subplots()
+fig.suptitle('Error over Epochs - PINN')
+axs.semilogy(np.linspace(0, 4_000*3, 4), error_PINN)
+axs.grid()
+axs.set_xlabel('Epochs')
+axs.set_ylabel('Error (mse)')
+fig.show()
+
+# Assume to not know the truth anymore
+fig, axs = plt.subplots()
+fig.suptitle('PINNs loss function over Epochs \n We dont know the truth anymore')
+axs.semilogy(np.linspace(0, 4_000*3, 4), loss_PINN)
+axs.grid()
+axs.set_xlabel('x')
+axs.set_ylabel('MSE')
 fig.show()
 
 print('Task completed PINN')
 
 fig, axs = plt.subplots()
+fig.suptitle('Comparison of the different methods')
 axs.scatter(x_regressor, y_regressor, s=10, label='True')
 axs.plot(x_regressor, y_regression, color='red', label='Linear Regression')
 axs.plot(x_regressor, y_nn[-1], color='green', label='NN')
 axs.plot(t_test.detach().numpy(), u.detach().numpy(), color='purple', label='PINN')
+axs.set_xlabel('Time')
+axs.set_ylabel('Amplitude')
 axs.grid()
 axs.legend()
 fig.tight_layout()

@@ -49,6 +49,14 @@ pip install meteostat
 
 The truth about this data is the average temperature on each day for the last 2 years at the specified spatial position on earth.
 
+## Assignment 2
+
+### Installations
+
+``` bash
+pip install tensorflow torch scikit-learn
+```
+
 ## Contact
 
 ### Author

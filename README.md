@@ -53,8 +53,16 @@ The truth about this data is the average temperature on each day for the last 2 
 
 ### Installations
 
+For assignment 2 some extra packages are used, which are also written to the `requirements.txt` file
+
 ``` bash
 pip install tensorflow torch scikit-learn
+```
+
+### Execute the code
+
+``` bash
+python code/exercise_2.py
 ```
 
 ## Contact

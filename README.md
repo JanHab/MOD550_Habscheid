@@ -11,6 +11,14 @@ Use the `requirements.txt` to install necessary dependencies
 pip install -r requirements.txt
 ```
 
+### Installation with Conda
+
+```bash
+conda create --name MOD550 python=3.12.2 -y
+conda activate MOD550
+pip install -r requirements.txt
+```
+
 ## Assignment 1
 
 Execute with:
@@ -52,15 +60,14 @@ The truth about this data is the average temperature on each day for the last 2 
 
 ## Assignment 2
 
-### Installations
+Use `scikit-learn`for linear regression, `tensorflow` with the keras frontend for NN and `torch`for PINNs.
 
-For assignment 2 some extra packages are used, which are also written to the `requirements.txt` file
+### Code Execution
 
-``` bash
-pip install tensorflow torch scikit-learn
-```
+The code execution may take some time initially to load all the packages.
+Wait at least 30 seconds before interrupting the execution.
 
-### Execute the code
+Run
 
 ``` bash
 python code/exercise_2.py

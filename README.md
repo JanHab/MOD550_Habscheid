@@ -3,7 +3,8 @@ Repository for the course: MOD550 from Jan Habscheid
 
 ## Installation
 
-All the calculations were performed with Python=3.12.2.
+All the calculations were performed with **Python=3.12.2**.
+Another Python version might also work, but was not tested.
 Use the `requirements.txt` to install necessary dependencies
 
 ``` bash
